@@ -1,4 +1,24 @@
-﻿# Überprüfen, ob das Skript mit Administratorrechten ausgeführt wird
+<#
+    Dieses Skript erstellt einen geplanten Task, der täglich um 19:00 Uhr den Server neu startet. 
+    Nach der ersten Ausführung wird der geplante Task automatisch deaktiviert.
+
+    Was das Skript tut:
+    1. **Überprüfen auf Administratorrechte**: Das Skript stellt sicher, dass es mit Administratorrechten ausgeführt wird.
+    2. **Überprüfen auf bestehenden Task**: Wenn der Task mit dem Namen 'ServerNeustart_19Uhr' noch nicht existiert, wird er erstellt.
+    3. **Erstellen eines geplanten Tasks**: Ein Task wird so eingerichtet, dass er täglich um 19:00 Uhr den Server neu startet.
+    4. **Deaktivierung des Tasks nach der ersten Ausführung**: Ein weiteres Skript wird erstellt, das den Neustart-Task nach der ersten Ausführung deaktiviert.
+    5. **Erstellen eines zweiten geplanten Tasks**: Ein Task wird erstellt, der das Deaktivierungs-Skript nach dem Neustart des Servers ausführt.
+
+    Was manuell angepasst werden muss:
+    1. **TaskName**: Der Name des geplanten Tasks ist auf 'ServerNeustart_19Uhr' gesetzt. Falls du den Namen des Tasks ändern möchtest, passe den Wert der Variablen `$TaskName` an.
+    2. **Zeiten und Trigger**: Der geplante Task wird auf 19:00 Uhr täglich gesetzt. Um die Zeit oder Häufigkeit zu ändern, passe den Trigger `New-ScheduledTaskTrigger -Daily -At 19:00` an.
+    3. **Neustart-Optionen**: Der Task verwendet `shutdown.exe /r /t 60 /f` für den Neustart des Servers. Falls du andere Neustart-Optionen oder Befehle verwenden möchtest, passe die Aktion `New-ScheduledTaskAction -Execute "shutdown.exe" -Argument "/r /t 60 /f"` an.
+    4. **Deaktivierung des Tasks**: Das Skript erstellt ein weiteres Skript, um den geplanten Task nach der ersten Ausführung zu deaktivieren. Wenn du die Verzögerung oder andere Optionen ändern möchtest, passe den Code des Deaktivierungs-Skripts an.
+
+    Hinweis: Das Skript erstellt zwei geplante Tasks, einen für den Neustart des Servers und einen zweiten, um den Neustart-Task nach der Ausführung zu deaktivieren. Das Skript wartet dann darauf, dass der Benutzer eine Eingabe macht, bevor es beendet wird.
+#>
+
+# Überprüfen, ob das Skript mit Administratorrechten ausgeführt wird
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Host "Dieses Skript erfordert Administratorrechte. Bitte führen Sie es als Administrator aus."
     exit
