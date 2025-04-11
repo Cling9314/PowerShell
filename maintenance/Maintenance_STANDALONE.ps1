@@ -23,30 +23,29 @@ Verwendung:
 - Führen Sie das Skript als Administrator aus, um alle erforderlichen Aufgaben korrekt auszuführen, insbesondere das Erstellen geplanter Tasks und das Installieren von Modulen.
 - Stellen Sie sicher, dass die Systemumgebung für die Ausführung von Skripten und das Installieren von Modulen vorbereitet ist.
 #>
-# Git-Repository-URL und der Pfad zum lokalen Skript
-$repositoryPath = "C:\Pfad\zu\deinem\repository"  # Pfad zum Git-Repo
-$scriptName = "deinskript.ps1"  # Name des Skripts, das überprüft und aktualisiert werden soll
-$localScriptPath = "$repositoryPath\$scriptName"  # Pfad zum lokalen Skript
 
-# Stelle sicher, dass das Repository aktuell ist (fetch und checkout)
-cd $repositoryPath
-git fetch --all
+# URL zum Raw Skript in deinem GitHub Repository
+$rawScriptUrl = "https://raw.githubusercontent.com/Benutzername/Repository/Branch/deinskript.ps1"  # Ersetze Benutzername, Repository und Branch
 
-# Überprüfe, ob es Änderungen im Git-Repository gibt (z.B. differenzierte Commits)
-$localCommit = git rev-parse HEAD
-$remoteCommit = git rev-parse origin/main  # Passe dies an, wenn du einen anderen Branch verwendest
+# Der Pfad zum lokalen Skript
+$localScriptPath = $MyInvocation.MyCommand.Path  # Das Skript läuft immer hier
 
-# Wenn der lokale Commit nicht dem remote Commit entspricht, aktualisiere das Skript
-if ($localCommit -ne $remoteCommit) {
+# Hole den Hashwert des aktuellen lokalen Skripts
+$localScriptHash = Get-FileHash -Path $localScriptPath -Algorithm SHA256
+
+# Hole den Hashwert der neuesten Version des Skripts von GitHub
+$remoteScriptContent = Invoke-WebRequest -Uri $rawScriptUrl -UseBasicPreamble -Method Get
+$remoteScriptHash = Get-FileHash -InputStream $remoteScriptContent.Content -Algorithm SHA256
+
+# Vergleiche die Hashes
+if ($localScriptHash.Hash -ne $remoteScriptHash.Hash) {
     Write-Host "Es gibt eine neuere Version des Skripts. Aktualisiere..."
 
-    # Aktualisiere das Repository
-    git pull origin main  # Stelle sicher, dass dies den richtigen Branch abruft
-
-    # Kopiere das neueste Skript ins Zielverzeichnis
-    Copy-Item "$repositoryPath\$scriptName" -Destination $localScriptPath -Force
+    # Lade die neueste Version des Skripts herunter
+    Invoke-WebRequest -Uri $rawScriptUrl -OutFile $localScriptPath
 
     Write-Host "Das Skript wurde aktualisiert."
+
     # Beende das Skript nach dem Kopieren
     return
 } else {
