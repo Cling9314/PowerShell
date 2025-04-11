@@ -1,4 +1,30 @@
-﻿# Lokaler Servername zur Infoausgabe
+<#
+Dieses Skript bietet verschiedene Wartungs- und Systemprüfungsfunktionen für einen Windows-Server. Es führt folgende Aufgaben aus:
+
+1. **Automatische Dienste starten** – Überprüft und startet alle automatisch startenden Dienste, die nicht laufen.
+2. **Windows Updates installieren (ohne Neustart)** – Installiert Windows Updates ohne den Server neu zu starten.
+3. **Windows Updates im Hintergrund installieren (ohne Neustart)** – Installiert Windows Updates im Hintergrund, ohne den Server neu zu starten.
+4. **Ereignisanzeige prüfen** – Durchsucht die Event Logs nach kritischen Fehlern und zeigt diese an.
+5. **Festplattenbelegung überprüfen** – Gibt die Belegung und den freien Speicherplatz der Festplatten aus.
+6. **Systemdatei-Überprüfung (SFC)** – Führt den SFC Scan zur Überprüfung und Reparatur der Systemdateien durch.
+7. **DISM Health-Überprüfung und Reparatur** – Führt DISM-Scans durch, um Systemprobleme zu überprüfen und zu reparieren.
+8. **Exchange Health-Check und Queue-Status** – Überprüft den Zustand des Exchange Servers und der Warteschlangen.
+9. **Geplanten Neustart konfigurieren** – Ermöglicht das Festlegen eines täglichen Neustarts für den Server.
+10. **Automatisches Überprüfen von Diensten nach Neustart** – Erstellt einen geplanten Task, um nach einem Neustart automatisch alle benötigten Dienste zu starten.
+
+Manuelle Anpassungen:
+- **Servername**: Der lokale Servername wird automatisch ermittelt, basierend auf der Umgebungsvariable `$env:COMPUTERNAME`.
+- **PSWindowsUpdate-Modul**: Das Modul wird bei Bedarf installiert, stellen Sie sicher, dass PowerShell-Skripte auf dem System ausgeführt werden können.
+- **Benutzereingaben**: Es werden einige Benutzereingaben benötigt, z.B. die Eingabe einer Uhrzeit für den täglichen Neustart und die Bestätigung des Neustarts.
+- **Ordner und Skriptpfade**: Das Skript erstellt den Ordner `C:\Skripte`, stellen Sie sicher, dass der Pfad vorhanden ist oder die Berechtigungen für den Ordner stimmen.
+- **Exchange Server**: Für Exchange-spezifische Aufgaben muss der Exchange Server installiert sein. Das Skript überprüft, ob Exchange-Dienste erkannt werden.
+
+Verwendung:
+- Führen Sie das Skript als Administrator aus, um alle erforderlichen Aufgaben korrekt auszuführen, insbesondere das Erstellen geplanter Tasks und das Installieren von Modulen.
+- Stellen Sie sicher, dass die Systemumgebung für die Ausführung von Skripten und das Installieren von Modulen vorbereitet ist.
+#>
+
+ # Lokaler Servername zur Infoausgabe
 $ServerName = $env:COMPUTERNAME
 
 # Funktion zum Starten automatisch startender Dienste
