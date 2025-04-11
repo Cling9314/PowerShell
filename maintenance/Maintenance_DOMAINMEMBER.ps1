@@ -1,4 +1,26 @@
-﻿# Funktion, um die verfügbaren Server im AD zu scannen
+﻿<#
+Dieses Skript ermöglicht die Durchführung verschiedener Wartungs-, Überprüfungs- und Konfigurationsaufgaben auf Windows-Servern. Es bietet Optionen zur Verwaltung von Diensten, Windows-Updates, Festplattenbelegung, Systemüberprüfungen sowie spezifische Aktionen für Exchange Server.
+
+Wichtige Anpassungen:
+1. **Pfad für Skripte**: Der Standardordner für Skripte ist `C:\Skripte`. Wenn dieser Ordner nicht vorhanden ist, wird er erstellt. Ändern Sie den Pfad, wenn Sie diesen anpassen möchten.
+2. **Exchange Server**: Das Skript prüft, ob Exchange-Dienste vorhanden sind. Stellen Sie sicher, dass Exchange korrekt installiert ist, bevor Sie Exchange-spezifische Funktionen verwenden (z. B. HealthChecker und Queue).
+3. **Geplante Aufgaben**: Wenn Sie automatische Neustarts oder Dienststarts nach einem Neustart einrichten möchten, wird ein geplante Aufgabe erstellt. Hierbei müssen Sie sicherstellen, dass Ihr System die nötigen Berechtigungen für das Erstellen von geplanten Aufgaben besitzt.
+4. **Benutzerdefinierte Uhrzeit für Neustart**: Bei der Konfiguration eines automatischen Neustarts wird der Benutzer nach der gewünschten Uhrzeit gefragt. Geben Sie das Format `HH:mm` an.
+
+Das Skript bietet die folgenden Hauptfunktionen:
+- **Windows Server scannen**: Ermittelt alle Windows Server im Active Directory.
+- **Dienste verwalten**: Überprüft und startet automatisch startende Dienste.
+- **Windows Updates**: Installiert Windows Updates im Vordergrund oder Hintergrund (ohne Neustart).
+- **Event Logs prüfen**: Durchsucht System-, Anwendungs- und Sicherheitslogs nach kritischen Ereignissen.
+- **Festplattenbelegung prüfen**: Zeigt freien und belegten Speicherplatz auf den Festplatten an.
+- **Systemüberprüfungen durchführen**: SFC und DISM werden zur Reparatur des Systems im Hintergrund ausgeführt.
+- **Exchange Management**: Bietet Funktionen zur Überprüfung des Zustands und der Warteschlangen von Exchange Servern.
+- **Geplante Aufgaben für Neustarts und Dienstüberwachung**: Ermöglicht die Planung automatischer Neustarts und Dienstüberprüfungen nach einem Systemneustart.
+
+Achten Sie darauf, das Skript mit Administratorrechten auszuführen, insbesondere bei der Erstellung von geplanten Aufgaben oder der Durchführung von Reparaturen am System.
+#>
+
+# Funktion, um die verfügbaren Server im AD zu scannen
 function Get-WindowsServers {
     $servers = Get-ADComputer -Filter {OperatingSystem -Like "*Windows Server*"} -Property Name
     return $servers
