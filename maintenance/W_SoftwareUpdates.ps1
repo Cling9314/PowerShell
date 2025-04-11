@@ -1,4 +1,26 @@
-﻿# Funktion zur Überprüfung und Aktualisierung von MS Office
+﻿<#
+    Dieses Skript überprüft, ob verschiedene Softwareprodukte installiert sind (MS Office, Google Chrome, Mozilla Firefox, Microsoft Edge, Adobe Acrobat) 
+    und führt dann jeweils die verfügbaren Updates für diese Produkte durch.
+
+    1. **MS Office**: Das Skript prüft, ob MS Office installiert ist, und führt dann die Aktualisierung mit dem „OfficeC2RClient.exe“ aus, wenn es gefunden wird.
+    2. **Google Chrome**: Es prüft, ob Google Chrome installiert ist, und startet dann den Update-Prozess.
+    3. **Mozilla Firefox**: Es prüft, ob Mozilla Firefox installiert ist, und führt die Aktualisierung über die Befehlszeile aus.
+    4. **Microsoft Edge**: Das Skript prüft, ob Microsoft Edge installiert ist, und führt die Aktualisierung mit dem entsprechenden Argument aus.
+    5. **Adobe Acrobat**: Es prüft, ob Adobe Acrobat installiert ist und startet den Adobe Acrobat Updater, um die Software zu aktualisieren.
+
+    Was manuell angepasst werden muss:
+    1. **Installationspfade**: Die Pfade zu den Programmen (z. B. MS Office, Chrome, Firefox, Edge, Acrobat) sind auf Standard-Installationspfade eingestellt. 
+       Falls die Software an einem anderen Ort installiert ist, musst du die Pfade zu den jeweiligen Programmen anpassen.
+    2. **Update-Methoden**: Die Update-Methoden für die einzelnen Programme sind spezifisch für die jeweilige Software. Wenn eine andere Methode erforderlich ist, 
+       solltest du die Argumente oder die Art und Weise, wie das Update durchgeführt wird, ändern.
+    3. **Adobe Acrobat Pfad**: Der Pfad für Adobe Acrobat wird über die Registrierung ausgelesen. Falls die Software nicht korrekt registriert ist oder 
+       sich in einem anderen Zweig der Registrierung befindet, kann dies angepasst werden.
+
+    Hinweis: Das Skript führt die Updates ohne Benutzerinteraktion aus. Stelle sicher, dass die Programme korrekt installiert und konfiguriert sind, 
+    bevor du das Skript ausführst.
+#>
+
+# Funktion zur Überprüfung und Aktualisierung von MS Office
 
     Write-Host "Prüfe, ob MS Office installiert ist..."
     $officePath = "C:\Program Files\Common Files\Microsoft Shared\ClickToRun\OfficeC2RClient.exe"
