@@ -99,7 +99,7 @@ function Check-ForNewVersion {
 $localScriptPath = $MyInvocation.MyCommand.Path
 
 # Passen Sie diesen Raw-Link an den richtigen Pfad zu Ihrem Skript in Ihrem GitHub-Repository an.
-$githubFileUrl = "https://raw.githubusercontent.com/IhrBenutzername/IhrRepo/IhrBranch/Pfad/zum/Skript.ps1"
+$githubFileUrl = "https://github.com/Cling9314/PowerShell/blob/1fbc10b1c4743d749e4d4fd7c622b88951ca3a4a/maintenance/Maintenance_STANDALONE.ps1"
 
 # Aufruf der Versionsüberprüfung und eventuellem Ersetzen
 Check-ForNewVersion -ScriptPath $localScriptPath -GitHubFileUrl $githubFileUrl
