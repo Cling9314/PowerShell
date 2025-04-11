@@ -24,6 +24,8 @@ Verwendung:
 - Stellen Sie sicher, dass die Systemumgebung für die Ausführung von Skripten und das Installieren von Modulen vorbereitet ist.
 #>
 
+#version=1.0
+
 # Funktion zur Versionsprüfung und Dateiaktualisierung via GitHub
 function Check-ForNewVersion {
     param (
