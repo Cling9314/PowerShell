@@ -24,6 +24,86 @@ Verwendung:
 - Stellen Sie sicher, dass die Systemumgebung für die Ausführung von Skripten und das Installieren von Modulen vorbereitet ist.
 #>
 
+# Funktion zur Versionsprüfung und Dateiaktualisierung via GitHub
+function Check-ForNewVersion {
+    param (
+        # Lokaler Skriptpfad wird automatisch übergeben
+        [string]$ScriptPath,
+        # Raw-Link zur aktuellen Version des Skripts in GitHub (passen Sie diesen Link an!)
+        [string]$GitHubFileUrl
+    )
+
+    # Lese die lokale Versionsnummer
+    $localVersion = Get-ScriptVersion -ScriptPath $ScriptPath
+    if (-not $localVersion) {
+        Write-Host "Keine lokale Versionsnummer in der Datei gefunden!" -ForegroundColor Red
+        return
+    }
+    Write-Host "Lokale Version: $localVersion" -ForegroundColor Cyan
+
+    # Hole den Inhalt der Datei von GitHub
+    try {
+        $githubFileContent = Invoke-RestMethod -Uri $GitHubFileUrl -ErrorAction Stop
+    }
+    catch {
+        Write-Host "Fehler beim Abrufen der Datei von GitHub: $_" -ForegroundColor Red
+        return
+    }
+    
+    # Extrahiere die Versionsnummer aus dem GitHub-Dateiinhalt
+    $githubVersionMatch = $githubFileContent | Select-String -Pattern '#version\s*=\s*(\d+\.\d+)' 
+    if ($githubVersionMatch) {
+        $githubVersion = $githubVersionMatch.Matches[0].Groups[1].Value
+        Write-Host "GitHub-Version: $githubVersion" -ForegroundColor Cyan
+    }
+    else {
+        Write-Host "Keine Versionsnummer in der GitHub-Datei gefunden!" -ForegroundColor Red
+        return
+    }
+    
+    # Vergleich der Versionen als [Version] (funktioniert, wenn die Formatierung konsistent ist)
+    try {
+        $localVerObj = [Version]$localVersion
+        $githubVerObj = [Version]$githubVersion
+    } catch {
+        Write-Host "Fehler beim Konvertieren der Versionsnummern in [Version]-Objekte." -ForegroundColor Red
+        return
+    }
+    
+    if ($githubVerObj -gt $localVerObj) {
+        Write-Host "Es gibt eine neue Version! (GitHub-Version $githubVersion ist neuer als lokale Version $localVersion)" -ForegroundColor Yellow
+
+        # Frage den Benutzer, ob die Datei überschrieben werden soll
+        $confirmation = Read-Host "Möchten Sie das Skript mit der neuen Version von GitHub ersetzen? (J/N)"
+        if ($confirmation -match "^[jJ]$") {
+            try {
+                # Schreibe den neuen Inhalt von GitHub in die lokale Datei
+                Set-Content -Path $ScriptPath -Value $githubFileContent -Force
+                Write-Host "Die Datei wurde erfolgreich ersetzt!" -ForegroundColor Green
+
+                # Beende das Skript und starte es neu
+                Start-Process -FilePath $ScriptPath
+                Exit
+            }
+            catch {
+                Write-Host "Fehler beim Ersetzen der Datei: $_" -ForegroundColor Red
+            }
+        }
+    }
+    else {
+        Write-Host "Das Skript ist auf dem neuesten Stand." -ForegroundColor Green
+    }
+}
+
+# Automatisch den lokalen Skriptpfad ermitteln (aktuelles Skript)
+$localScriptPath = $MyInvocation.MyCommand.Path
+
+# Passen Sie diesen Raw-Link an den richtigen Pfad zu Ihrem Skript in Ihrem GitHub-Repository an.
+$githubFileUrl = "https://raw.githubusercontent.com/IhrBenutzername/IhrRepo/IhrBranch/Pfad/zum/Skript.ps1"
+
+# Aufruf der Versionsüberprüfung und eventuellem Ersetzen
+Check-ForNewVersion -ScriptPath $localScriptPath -GitHubFileUrl $githubFileUrl
+
  # Lokaler Servername zur Infoausgabe
 $ServerName = $env:COMPUTERNAME
 
