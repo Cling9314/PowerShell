@@ -25,7 +25,7 @@ Verwendung:
 #>
 
 # URL zum Raw Skript in deinem GitHub Repository
-$rawScriptUrl = "https://raw.githubusercontent.com/Benutzername/Repository/Branch/deinskript.ps1"  # Ersetze Benutzername, Repository und Branch
+$rawScriptUrl = "https://github.com/Cling9314/PowerShell/blob/fe1332c79b6c16333bec382064167f54873a78d8/maintenance/Maintenance_STANDALONE.ps1"  # Ersetze Benutzername, Repository und Branch
 
 # Der Pfad zum lokalen Skript
 $localScriptPath = $MyInvocation.MyCommand.Path  # Das Skript läuft immer hier
