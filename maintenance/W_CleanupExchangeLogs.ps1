@@ -1,3 +1,22 @@
+<#
+    Dieses Skript überprüft und setzt die **PowerShell-Ausführungsrichtlinie** auf „RemoteSigned“ (wenn sie noch nicht gesetzt ist).
+    Anschließend löscht es alle Log-Dateien, die älter als eine festgelegte Anzahl von Tagen sind, aus den angegebenen Log-Verzeichnissen.
+
+    Was manuell angepasst werden muss:
+    1. **Ausführungsrichtlinie**: Standardmäßig wird die Ausführungsrichtlinie auf „RemoteSigned“ gesetzt. Wenn du eine andere Richtlinie benötigst, 
+       kannst du den Wert in der Zeile `Set-ExecutionPolicy RemoteSigned -Force` ändern (z. B. `Unrestricted`).
+    2. **$days**: In der Variablen `$days` kannst du die Anzahl der Tage festlegen, nach denen Log-Dateien gelöscht werden sollen. Der Standardwert ist **1 Tag**.
+    3. **Log-Pfade**: Du kannst die Log-Verzeichnisse anpassen:
+       - **$IISLogPath**: Pfad zu den IIS-Protokollen (standardmäßig `C:\inetpub\logs\LogFiles\`).
+       - **$ExchangeLoggingPath**: Pfad zu den Exchange-Server-Protokollen.
+       - **$ETLLoggingPath** und **$ETLLoggingPath2**: Pfade zu den ETL-Log-Dateien von Exchange.
+       
+       Stelle sicher, dass diese Pfade auf deinem System korrekt sind.
+
+    Hinweis: Das Skript löscht alle Log-Dateien mit den Erweiterungen `.log`, `.blg` und `.etl`, die älter sind als die in `$days` angegebene Anzahl von Tagen. 
+    Dateien, die diesen Kriterien entsprechen, werden ohne Bestätigung gelöscht.
+#>
+
 # Set execution policy if not set
 $ExecutionPolicy = Get-ExecutionPolicy
 if ($ExecutionPolicy -ne "RemoteSigned") {
